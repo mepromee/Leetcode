@@ -2,21 +2,31 @@ class Solution {
 public:
     int rob(vector<int>& nums) {
         int n = nums.size();
-        vector<int>dp(n+1,-1);
-        return solve(0, nums, dp);
-    }
-private:
-    int solve(int i, vector<int>&nums, vector<int>&dp) {
-        if(i >= nums.size()) return 0;
-        if(dp[i] != -1) return dp[i];
+        if(n == 1) return nums[0];
+        int includingPre = nums[1], notIncludingPre = nums[0];
+        int includingCur, notIncludingCur;
+        int ans = max(includingPre, notIncludingPre);
         
-        return dp[i] = max(nums[i]+solve(i+2,nums,dp), solve(i+1,nums,dp));
+        for(int i =2; i<n; i++) {
+            notIncludingCur = max(notIncludingPre, includingPre);
+            includingCur = nums[i] + notIncludingPre;
+            
+            ans = max(ans, max(notIncludingCur, includingCur));
+            
+            notIncludingPre = notIncludingCur;
+            includingPre = includingCur;
+        }
+        return ans;
     }
 };
 /*
 6:40
 
 1 2 3 4 5  6 7 8 9 
+0 0 0
+
+2 1 1 2
+2 1 3 
 
 
 */
