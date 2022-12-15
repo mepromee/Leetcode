@@ -4,16 +4,19 @@ public:
         int n = text1.size();
         int m = text2.size();
         
-        vector<vector<int>>dp(n+1,vector<int>(m+1,0));
+        vector<int>nxtRow(m+1), cur(m+1);
         
-        dp[n][m] = 0;
+        int mx = 0;
         for(int i = n-1; i >= 0; i--) {
             for(int j = m-1; j>=0; j--) {
-                if(text1[i] == text2[j]) dp[i][j] = max(dp[i][j], 1+dp[i+1][j+1]);
-                dp[i][j] = max(dp[i][j], max(dp[i+1][j], dp[i][j+1]));
+                mx = 0;
+                if(text1[i] == text2[j]) mx = 1+nxtRow[j+1];
+                mx = max(mx, max(nxtRow[j], cur[j+1]));
+                cur[j] = mx;
             }
+            nxtRow = cur;
         }
-        return dp[0][0];
+        return cur[0];
     }
 };
 /*
@@ -23,4 +26,9 @@ i,j   i,j+1
 i+1,j
 
 n,m
+
+
+0000000
+0000000
+0000000
 */
