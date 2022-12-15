@@ -3,10 +3,7 @@ public:
     vector<int> findRedundantConnection(vector<vector<int>>& edges) {
         int n = edges.size();
         vector<vector<pair<int,int>>>adj(n+1);
-        
-        // states = 1 -> in active path, 
-        // states = 2 -> in finished path
-        vector<int>states(n+1);
+        vector<int>vis(n+1);
         int i = 0;
         for(auto edge: edges) {
             //construct adjacency list
@@ -15,7 +12,7 @@ public:
             i++;
         }
         
-        dfs(edges[0][0], edges[0][0], adj, states);
+        dfs(edges[0][0], edges[0][0], adj, vis);
         
         return edges[redundantEdgeId];
     }
@@ -25,19 +22,19 @@ private:
     bool isCycle = false;
     bool finished = false;
     
-    void dfs(int cur, int par, vector<vector<pair<int,int>>>adj, vector<int>&states) {
+    void dfs(int cur, int par, vector<vector<pair<int,int>>>adj, vector<int>&vis) {
         // mark to be in active path
-        states[cur] = 1;
+        vis[cur] = 1;
         for(auto nxt: adj[cur]) {
             if(nxt.first == par) continue;
             // nxt one is in active path then it's in a cycle
-            if(states[nxt.first] == 1) {
+            if(vis[nxt.first]) {
                 redundantEdgeId = max(redundantEdgeId, nxt.second);
                 cycleStart = nxt.first;
                 isCycle = true;
                 return;
             }
-            dfs(nxt.first, cur, adj, states);
+            dfs(nxt.first, cur, adj, vis);
             if(finished) return;
             if(isCycle) {
                 redundantEdgeId = max(redundantEdgeId, nxt.second);
@@ -45,12 +42,9 @@ private:
                 return;
             }
         }
-        states[cur] = 2;
     }
 };
 /*
 amazon
 fb
-
-3:07
 */
