@@ -2,28 +2,18 @@ class Solution {
 public:
     int maxProfit(vector<int>& prices) {
         int n = prices.size();
-        vector<vector<int>>dp(n+1, vector<int>(2,-1));
+        vector<vector<int>>dp(n+2, vector<int>(2,0));
         
-        return solve(0, 0, prices, dp);
-    }
-private:
-    // 0: buy
-    // 1: sell
-    
-    int solve(int i, int status, vector<int>&prices, vector<vector<int>>&dp) {
-        if(i >= prices.size()) return 0;
-        if(dp[i][status] != -1) return dp[i][status];
+        for(int i = n-1; i >=0; i--) {
+            dp[i][0] = max(dp[i+1][0],dp[i+1][1] - prices[i]);
+            dp[i][1] = max(dp[i+1][1],dp[i+2][0] + prices[i]);
+        }
         
-        int nxt_i = status == 1 ? i+2 : i+1;
-        int trans = status == 1 ? prices[i] : -prices[i];
-        
-        int res = solve(nxt_i, 1-status, prices, dp) + trans;
-        
-        res = max(res, solve(i+1, status, prices, dp));
-        
-        return dp[i][status] = res;
+        return dp[0][0];
     }
 };
 /*
 8:15
+
+ n-2 n-1 n
 */
