@@ -1,28 +1,22 @@
 class Solution {
 public:
     int maxPoints(vector<vector<int>>& points) {
-        int n = points.size(), mx=1, cnt, a, b, ta, tb;
-        double r, rr;
+        int n = points.size(), mx=1, a, b;
+        double r;
+        unordered_map<double, int> cnt;
         
         for(int i = 0; i < n; i++) {
-            for(int j = i+1; j < n; j++) {
-                b = points[i][0] - points[j][0];
-                a = points[i][1] - points[j][1];
+            cnt.clear();
+            for(int j = 0; j < n; j++) {
+                if(i == j) continue;
+                b = points[j][0] - points[i][0];
+                a = points[j][1] - points[i][1];
                 
-                r = -(b * (1.0))/a;
-                cnt = 2;
-                for(int k = 0; k < n; k++) {
-                    if(k == i || k == j) continue;
-                    tb = points[i][0] - points[k][0];
-                    ta = points[i][1] - points[k][1];
-                    
-                    rr = -(tb * 1.0) / ta;
-                    if(rr == r) {
-                        cnt++;
-                    }
-                }
+                r = atan2(a,b);
                 
-                mx = max(mx, cnt);
+                
+                cnt[r]++;
+                mx = max(mx, cnt[r]+1);
             }
         }
         return mx;
