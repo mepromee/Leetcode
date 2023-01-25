@@ -1,51 +1,36 @@
 class Solution {
 public:
-    int closestMeetingNode(vector<int>& edges, int node1, int node2) {        
-        int ans = bfs(node1, node2, edges);
+    int closestMeetingNode(vector<int>& edges, int node1, int node2) {
+        int n = edges.size();
+        vector<int>dist1(n,-1),dist2(n,-1);
+        dist1[node1] = 0;
+        dist2[node2] = 0;
+        int ans = -1, mx = n+1;
+        
+        dfs(node1, edges, dist1);
+        dfs(node2, edges, dist2);
+        
+        for(int i = 0; i < n; i++) {
+            if(dist1[i] != -1 && dist2[i] != -1) {
+                int mxDist = max(dist1[i], dist2[i]);
+                if(mxDist < mx) {
+                    ans = i;
+                    mx = mxDist;
+                }
+            }
+        }
         
         return ans;
     }
 private:
-    int bfs(int node1, int node2, vector<int>&edges) {
-        int n = edges.size(), mx = n+1;
-        pair<int,int> ans = {-1, n+1};
-        vector<vector<int>> vis(n, vector<int>(2,-1));
-        
-        queue<pair<int,int>>q;
-        q.push({node1,0});
-        q.push({node2,1});
-        
-        vis[node1][0] = 0;
-        vis[node2][1] = 0;
-        
-        while(!q.empty()) {
-            auto cur = q.front();
-            q.pop();
-            
-            int curNode = cur.first;
-            int curStatus = cur.second; // 0 or 1
-            
-            if(vis[curNode][1-curStatus] != -1) {
-                int curMx = max(vis[curNode][curStatus],vis[curNode][1-curStatus]);
-                if(mx >= curMx) {
-                    if(mx == curMx) {
-                        ans = {min(ans.first, curNode), curMx};
-                    }
-                    else {
-                        ans = {curNode, curMx};
-                    } 
-                    mx = curMx;
-                }
-            }
-            
-            int nxt = edges[curNode];
-            if(nxt == -1 || vis[nxt][curStatus] != -1) continue;
-            
-            vis[nxt][curStatus] = vis[curNode][curStatus] + 1;
-            q.push({nxt,curStatus});
+    void dfs(int cur, vector<int>&edges, vector<int>&dist) {
+        int nxt = edges[cur];
+        if(nxt == -1 || dist[nxt] != -1) {
+            // can't go further or visited already
+            return;
         }
-        
-        return ans.first;
+        dist[nxt] = dist[cur] + 1;
+        dfs(nxt, edges, dist);
     }
 };
 /*
