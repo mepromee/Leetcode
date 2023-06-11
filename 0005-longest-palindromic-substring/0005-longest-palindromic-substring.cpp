@@ -6,7 +6,7 @@ public:
         
         for(int len = 1; len <= n; len++) {
             for(int i = 0, j = i+len-1; i < n && j < n; i++, j++) {
-                if(len % 2 == 0) arrIndex = 1;
+                if(len & 1) arrIndex = 1;
                 else arrIndex = 0;
                 
                 if(s[i] == s[j]) {
