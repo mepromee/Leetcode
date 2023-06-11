@@ -8,7 +8,7 @@ public:
     
     void set(int index, int val) {
         auto &snapIdValuePair = array[index];
-        snapIdValuePair[curSnapId] = val;
+        snapIdValuePair.push_back({curSnapId, val});
         
     }
     
@@ -19,13 +19,13 @@ public:
     
     int get(int index, int snap_id) {
         auto &snapIdValuePair = array[index];
-        auto it = snapIdValuePair.upper_bound(snap_id);
+        auto it = upper_bound(snapIdValuePair.begin(), snapIdValuePair.end(), make_pair(snap_id, INT_MAX));
         if(it == snapIdValuePair.begin()) return 0;
         it--;
         return it->second;
     }
 private:
-    vector<map<int,int>> array;
+    vector<vector<pair<int,int>>> array;
     int curSnapId;
 };
 
