@@ -1,37 +1,38 @@
 class Solution {
 public:
     string longestPalindrome(string s) {
-        int n = s.size(), mxLen = 0, palindromeStartIndex = 0, arrIndex;
-        palindromeStatus.resize(2, vector<int>(n,0));
+        int n = s.size(), len, maxLen = 0, startPos = 0;
         
-        for(int len = 1; len <= n; len++) {
-            for(int i = 0, j = i+len-1; i < n && j < n; i++, j++) {
-                if(len & 1) arrIndex = 1;
-                else arrIndex = 0;
-                
-                if(s[i] == s[j]) {
-                    if(len <= 2 || palindromeStatus[arrIndex][i+1] == 1) {
-                        palindromeStatus[arrIndex][i] = 1;
-                        mxLen = len;
-                        palindromeStartIndex = i;
-                        continue;
-                    }
-                }
-                palindromeStatus[arrIndex][i] = 0;
-            }
+        for(int i = 0; i < n; i++) {
+            expandFromCenter(i,i, s, maxLen, startPos);
         }
         
-        string ans = s.substr(palindromeStartIndex, mxLen);
+        for(int i = 0; i < n-1; i++) {
+            expandFromCenter(i,i+1, s, maxLen, startPos);
+        }
         
-        return ans;
+        return s.substr(startPos, maxLen);
     }
     
 private:
-    vector<vector<int>> palindromeStatus;
-    
+    void expandFromCenter(int i, int j, string &s, int &maxLen, int &startPos) {
+        int len;
+        
+        for(int l = i, r = j; l >= 0 && r < s.size(); l--, r++) {
+            if(s[l] == s[r]) {
+                len  = r - l + 1;
+                if(len >= maxLen) {
+                    maxLen = len;
+                    startPos = l;
+                }
+            }
+            else break;
+        }
+    }
 };
 /*
 1:12
 1:50
+2:49
 M
 */
